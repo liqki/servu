@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { downloadServerSoftware } from "../utils/downloadServerSoftware";
 import { hasKey, writeToStorage } from "../utils/localStorage";
+import { javaInstructions } from "../utils/getJavaVersion";
 
 const userInput = async () => {
   const serverInfo = {
@@ -58,6 +59,19 @@ const acceptEula = async () => {
   return eula;
 };
 
+const createStartScript = (absolutePath: string, memory: string) => {
+  const os = process.platform;
+  const script = os === "win32" ? "start.bat" : "start.sh";
+  fs.writeFileSync(
+    path.join(absolutePath, script),
+    os === "win32"
+      ? `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
+      : // TODO: create linux start script
+        `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
+  );
+  if (os !== "win32") fs.chmodSync(path.join(absolutePath, script), "755");
+};
+
 export const create = async () => {
   console.log(chalk.bold("Create a new Minecraft server"));
   const { name, version, software, memory, location } = await userInput();
@@ -76,7 +90,10 @@ export const create = async () => {
   }
   fs.writeFileSync(path.join(absolutePath, "eula.txt"), "eula=true");
 
+  createStartScript(absolutePath, memory);
+
   console.log(chalk.greenBright("Server created successfully"));
-  console.log(chalk.blueBright("Run the server using the command: " + chalk.bgGrey(`servu run ${name}`)));
+  const validVersionInstalled = await javaInstructions(version, software);
+  if (validVersionInstalled) console.log(chalk.blueBright("Run the server using the command: " + chalk.bgGrey(`servu run ${name}`)));
   process.exit(0);
 };
