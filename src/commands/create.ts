@@ -1,4 +1,4 @@
-import { confirm, input, number, select, Separator } from "@inquirer/prompts";
+import { confirm, input, select, Separator } from "@inquirer/prompts";
 import ora from "ora";
 import chalk from "chalk";
 import fs from "fs";
@@ -37,9 +37,9 @@ const userInput = async () => {
       ],
       default: "vanilla",
     }),
-    memory: await number({
+    memory: await input({
       message: "Enter the amount of memory (in MB) to allocate to the server",
-      default: 2048,
+      default: "2048",
     }),
     location: await input({
       message: "Enter the location to save the server files (a subdirectory named after the server will be created)",
@@ -58,7 +58,7 @@ const acceptEula = async () => {
   return eula;
 };
 
-export const createServer = async () => {
+export const create = async () => {
   console.log(chalk.bold("Create a new Minecraft server"));
   const { name, version, software, memory, location } = await userInput();
   const absolutePath = path.resolve(path.join(location, name));

@@ -7,11 +7,11 @@
 - [x] own local storage implementation
 - [x] download server software for vanilla and paper
 - [ ] download server software for spigot, fabric and forge
-- [ ] delete key from local storage
-- [ ] update local storage when server directory does not exist anymore
-- [ ] server list command
+- [x] delete key from local storage
+- [x] update local storage when server directory does not exist anymore => cleanup command
+- [x] server list command
 - [ ] run server command using child_process
 - [ ] automatically create suiting start script for os (.bat, .sh)
 - [ ] hook to server console
-- [ ] remove server command
+- [x] delete server command
 - [ ] instructions on installing java if not present

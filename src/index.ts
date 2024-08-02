@@ -1,8 +1,20 @@
 import { program } from "commander";
-import { createServer } from "./commands/createServer";
+import { create } from "./commands/create";
+import { list } from "./commands/list";
+import { cleanup } from "./commands/cleanup";
+import { deleteServer } from "./commands/delete";
 
 program.name("servu").version("1.0.0", "-v, --version").helpCommand(false).description("A CLI tool to manage Minecraft servers");
 
-program.command("create").description("Create a new Minecraft server").action(createServer);
+program.command("create").description("Create a new Minecraft server").action(create);
+
+program.command("list").description("List all Minecraft servers").action(list);
+program.command("cleanup").description("Update your server list and remove deleted servers").action(cleanup);
+program
+  .command("delete <server>")
+  // TODO: Add a flag to skip the confirmation prompt (not working yet)
+  .option("-y, --yes", "Skip confirmation prompt")
+  .description("Delete a Minecraft server")
+  .action((server) => deleteServer(server, program.opts().yes));
 
 program.parse(process.argv);
