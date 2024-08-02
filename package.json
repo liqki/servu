@@ -13,10 +13,11 @@
     "@inquirer/prompts": "^5.3.6",
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
-    "ora": "^8.0.1"
+    "ora": "^3.4.0"
   },
   "devDependencies": {
     "@types/node": "^22.1.0",
+    "@types/ora": "^3.2.0",
     "typescript": "^5.5.4"
   }
 }

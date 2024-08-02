@@ -19,5 +19,24 @@ const download = async (url: string, location: string) => {
 };
 
 const getDownloadUrl = async (software: string, version: string): Promise<string> => {
-  return "";
+  switch (software) {
+    case "vanilla":
+      const { versions } = await fetch("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((res) => res.json());
+      const release = versions.find((v: { type: string; id: string }) => v.type === "release" && v.id === version);
+      if (!release) return "";
+      const { downloads } = await fetch(release.url).then((res) => res.json());
+      return downloads.server.url;
+    case "paper":
+      const { builds } = await fetch(`https://papermc.io/api/v2/projects/paper/versions/${version}/builds`).then((res) => res.json());
+      const latestBuild = builds[builds.length - 1].build;
+      return `https://papermc.io/api/v2/projects/paper/versions/${version}/builds/${latestBuild}/downloads/paper-${version}-${latestBuild}.jar`;
+    case "spigot":
+      return ``;
+    case "fabric":
+      return ``;
+    case "forge":
+      return ``;
+    default:
+      return "";
+  }
 };

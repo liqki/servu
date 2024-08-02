@@ -1,16 +1,20 @@
-import { input, number, select, Separator } from "@inquirer/prompts";
+import { confirm, input, number, select, Separator } from "@inquirer/prompts";
 import ora from "ora";
 import chalk from "chalk";
+import fs from "fs";
+import path from "path";
 import { downloadServerSoftware } from "../utils/downloadServerSoftware";
+import { hasKey, writeToStorage } from "../utils/localStorage";
 
 const userInput = async () => {
   const serverInfo = {
     name: await input({
       message: "Enter the name of the server",
       default: "server",
-      validate: (input) => {
+      validate: async (input) => {
         if (input.length === 0 || input.length > 16) return "Server name must be between 1 and 16 characters";
         if (input.includes(" ")) return "Server name cannot contain spaces";
+        if (await hasKey(input)) return "Server with that name already exists";
         return true;
       },
     }),
@@ -46,11 +50,33 @@ const userInput = async () => {
   return serverInfo;
 };
 
+const acceptEula = async () => {
+  const eula = await confirm({
+    message: "Do you accept the Minecraft EULA? (https://www.minecraft.net/en-us/eula)",
+    default: true,
+  });
+  return eula;
+};
+
 export const createServer = async () => {
   console.log(chalk.bold("Create a new Minecraft server"));
   const { name, version, software, memory, location } = await userInput();
+  const absolutePath = path.resolve(path.join(location, name));
+
+  await writeToStorage(name, { version, software, memory, location: absolutePath });
 
   const spinner = ora("Fetching server software").start();
-  await downloadServerSoftware(software, version, location);
+  await downloadServerSoftware(software, version, absolutePath);
   spinner.succeed("Server software downloaded");
+
+  let eula = await acceptEula();
+  while (!eula) {
+    console.log(chalk.redBright("You must accept the EULA to create a server"));
+    eula = await acceptEula();
+  }
+  fs.writeFileSync(path.join(absolutePath, "eula.txt"), "eula=true");
+
+  console.log(chalk.greenBright("Server created successfully"));
+  console.log(chalk.blueBright("Run the server using the command: " + chalk.bgGrey(`servu run ${name}`)));
+  process.exit(0);
 };
