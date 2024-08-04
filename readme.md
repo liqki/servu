@@ -8,14 +8,17 @@
 - [x] prompts using inquirer
 - [x] own local storage implementation
 - [x] download server software for vanilla, paper and fabric
+- [x] fixed download (files were corrupt since download function wasn't awaited)
 - [ ] download server software for spigot and forge
 - [ ] find download api / manually assign version download links
 - [x] delete key from local storage
 - [x] update local storage when server directory does not exist anymore => cleanup command
 - [x] server list command
+- [ ] add online status to server list
 - [x] run server command using child_process => windows done
 - [ ] run server command using child_process => linux also add ability to use screen
 - [ ] ability to reenter console after server is started using screen
+- [ ] stop command for screen session
 - [x] java warning if not installed / wrong version
 - [x] fix: java version not detected properly
 - [x] automatically create suiting start script for os (.bat, .sh) => windows done, linux: create appropiate start.sh

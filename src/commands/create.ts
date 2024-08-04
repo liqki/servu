@@ -66,14 +66,17 @@ const acceptEula = async () => {
   return eula;
 };
 
-const createStartScript = (absolutePath: string, memory: string, useScreen: boolean) => {
+const createStartScript = (absolutePath: string, memory: string, useScreen: boolean, name: string) => {
   const platform = os.platform();
   const script = platform === "win32" ? "start.bat" : "start.sh";
-  fs.writeFileSync(
-    path.join(absolutePath, script),
-    platform === "win32" ? `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui` : `${useScreen ? "screen -AmdS minecraft " : ""}java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
-  );
-  if (platform !== "win32") fs.chmodSync(path.join(absolutePath, script), "755");
+  fs.writeFileSync(path.join(absolutePath, script), platform === "win32" ? `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui` : `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`);
+  if (useScreen && platform === "linux") {
+    fs.writeFileSync(path.join(absolutePath, "start-screen.sh"), `screen -AmdS ${name} sh start.sh`);
+  }
+  if (platform === "linux") {
+    fs.chmodSync(path.join(absolutePath, "start.sh"), "755");
+    fs.chmodSync(path.join(absolutePath, "start-screen.sh"), "755");
+  }
 };
 
 export const create = async () => {
@@ -96,7 +99,7 @@ export const create = async () => {
   }
   fs.writeFileSync(path.join(absolutePath, "eula.txt"), "eula=true");
 
-  createStartScript(absolutePath, memory, useScreen || false);
+  createStartScript(absolutePath, memory, useScreen || false, name);
 
   console.log(chalk.greenBright("Server created successfully"));
   const validJavaVersionInstalled = await javaInstructions(version, software);

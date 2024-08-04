@@ -11,7 +11,7 @@ program.command("create").description("Create a new Minecraft server").action(cr
 program
   .command("start <server>")
   .alias("run")
-  .option("-d, --detached", "Run the server in the background")
+  .option("-d, --detached", "Run the server in the background (works best on linux with screen)")
   .option("-s, --silent", "Hide the server log")
   .description("Start a Minecraft server")
   .action((server, options) => start(server, options.detached || false, options.silent || false));

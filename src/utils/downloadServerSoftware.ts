@@ -1,3 +1,4 @@
+import { resolve } from "bun";
 import chalk from "chalk";
 import fs from "fs";
 import https from "https";
@@ -18,17 +19,36 @@ export const downloadServerSoftware = async (software: string, version: string, 
     console.log(chalk.red("\nFailed to get download URL for the specified software and version"));
     return process.exit(0);
   }
-  download(downloadUrl, location);
+  await download(downloadUrl, location);
 };
 
 const download = async (url: string, location: string) => {
   if (!fs.existsSync(location)) fs.mkdirSync(location, { recursive: true });
-  const file = fs.createWriteStream(`${location}/server.jar`);
-  https.get(url, (res) => {
-    res.pipe(file);
-    file.on("finish", () => {
-      file.close();
-    });
+  return new Promise((resolve, reject) => {
+    const filePath = `${location}/server.jar`;
+    const file = fs.createWriteStream(filePath);
+
+    https
+      .get(url, (res) => {
+        res.pipe(file);
+
+        file.on("finish", () => {
+          file.close(resolve);
+        });
+
+        file.on("error", (err) => {
+          fs.unlink(filePath, () => reject(err));
+        });
+
+        res.on("error", (err) => {
+          fs.unlink(filePath, () => {
+            reject(err);
+          });
+        });
+      })
+      .on("error", (err) => {
+        fs.unlink(filePath, () => reject(err));
+      });
   });
 };
 
