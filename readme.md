@@ -3,7 +3,7 @@
 ## ToDo
 
 - [x] create server command
-- [ ] validate minecraft version
+- [x] validate minecraft version
 - [x] automatically create eula.txt
 - [x] prompts using inquirer
 - [x] own local storage implementation
@@ -13,11 +13,14 @@
 - [x] delete key from local storage
 - [x] update local storage when server directory does not exist anymore => cleanup command
 - [x] server list command
-- [ ] run server command using child_process
+- [x] run server command using child_process => windows done
+- [ ] run server command using child_process => linux also add ability to use screen
+- [ ] ability to reenter console after server is started using screen
 - [x] java warning if not installed / wrong version
 - [x] fix: java version not detected properly
-- [ ] automatically create suiting start script for os (.bat, .sh) => windows done, linux: create appropiate start.sh
-- [ ] hook to server console
+- [x] automatically create suiting start script for os (.bat, .sh) => windows done, linux: create appropiate start.sh
+- [x] ability to use screen on linux
+- [x] hook to server console
 - [x] delete server command
 - [x] instructions on installing java if not present
 - [x] migrate to bun

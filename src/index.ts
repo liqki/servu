@@ -11,8 +11,10 @@ program.command("create").description("Create a new Minecraft server").action(cr
 program
   .command("start <server>")
   .alias("run")
+  .option("-d, --detached", "Run the server in the background")
+  .option("-s, --silent", "Hide the server log")
   .description("Start a Minecraft server")
-  .action((server) => start(server));
+  .action((server, options) => start(server, options.detached || false, options.silent || false));
 
 program.command("list").description("List all Minecraft servers").action(list);
 program.command("cleanup").description("Update your server list and remove deleted servers").action(cleanup);

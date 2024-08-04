@@ -3,9 +3,11 @@ import ora from "ora";
 import chalk from "chalk";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { downloadServerSoftware } from "../utils/downloadServerSoftware";
 import { hasKey, writeToStorage } from "../utils/localStorage";
 import { javaInstructions } from "../utils/getJavaVersion";
+import { installScreen } from "../utils/installScreen";
 
 const userInput = async () => {
   const serverInfo = {
@@ -45,6 +47,12 @@ const userInput = async () => {
       message: "Enter the location to save the server files (a subdirectory named after the server will be created)",
       default: ".",
     }),
+    ...(os.platform() === "linux" && {
+      useScreen: await confirm({
+        message: "Since you're on linux, it is recommended to run the server in a screen session. Do you want to use screen (it will be installed if not present)?",
+        default: true,
+      }),
+    }),
   };
 
   return serverInfo;
@@ -58,27 +66,26 @@ const acceptEula = async () => {
   return eula;
 };
 
-const createStartScript = (absolutePath: string, memory: string) => {
-  const os = process.platform;
-  const script = os === "win32" ? "start.bat" : "start.sh";
+const createStartScript = (absolutePath: string, memory: string, useScreen: boolean) => {
+  const platform = os.platform();
+  const script = platform === "win32" ? "start.bat" : "start.sh";
   fs.writeFileSync(
     path.join(absolutePath, script),
-    os === "win32"
-      ? `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
-      : // TODO: create linux start script
-        `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
+    platform === "win32" ? `java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui` : `${useScreen ? "screen -AmdS minecraft " : ""}java -Xmx${memory}M -Xms${memory}M -jar server.jar nogui`
   );
-  if (os !== "win32") fs.chmodSync(path.join(absolutePath, script), "755");
+  if (platform !== "win32") fs.chmodSync(path.join(absolutePath, script), "755");
 };
 
 export const create = async () => {
   console.log(chalk.bold("Create a new Minecraft server"));
-  const { name, version, software, memory, location } = await userInput();
+  const { name, version, software, memory, location, useScreen } = await userInput();
   const absolutePath = path.resolve(path.join(location, name));
 
   const spinner = ora("Fetching server software").start();
   await downloadServerSoftware(software, version, absolutePath);
   spinner.succeed("Server software downloaded");
+
+  if (useScreen) await installScreen();
 
   await writeToStorage(name, { version, software, memory, location: absolutePath });
 
@@ -89,7 +96,7 @@ export const create = async () => {
   }
   fs.writeFileSync(path.join(absolutePath, "eula.txt"), "eula=true");
 
-  createStartScript(absolutePath, memory);
+  createStartScript(absolutePath, memory, useScreen || false);
 
   console.log(chalk.greenBright("Server created successfully"));
   const validJavaVersionInstalled = await javaInstructions(version, software);
