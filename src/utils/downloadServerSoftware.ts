@@ -1,9 +1,23 @@
+import chalk from "chalk";
 import fs from "fs";
 import https from "https";
 
+const validateVersion = async (version: string): Promise<boolean> => {
+  const { versions } = await fetch("https://launchermeta.mojang.com/mc/game/version_manifest.json").then((res: any) => res.json());
+  return versions.find((v: { id: string }) => v.id === version);
+};
+
 export const downloadServerSoftware = async (software: string, version: string, location: string) => {
+  const validVersion = await validateVersion(version);
+  if (!validVersion) {
+    console.log(chalk.red("\nInvalid version specified"));
+    return process.exit(0);
+  }
   const downloadUrl = await getDownloadUrl(software, version);
-  if (!downloadUrl) throw new Error("Could not find download URL");
+  if (!downloadUrl) {
+    console.log(chalk.red("\nFailed to get download URL for the specified software and version"));
+    return process.exit(0);
+  }
   download(downloadUrl, location);
 };
 
@@ -30,12 +44,8 @@ const getDownloadUrl = async (software: string, version: string): Promise<string
       const { builds } = await fetch(`https://papermc.io/api/v2/projects/paper/versions/${version}/builds`).then((res: any) => res.json());
       const latestBuild = builds[builds.length - 1].build;
       return `https://papermc.io/api/v2/projects/paper/versions/${version}/builds/${latestBuild}/downloads/paper-${version}-${latestBuild}.jar`;
-    case "spigot":
-      return ``;
     case "fabric":
-      return ``;
-    case "forge":
-      return ``;
+      return `https://meta.fabricmc.net/v2/versions/loader/${version}/0.15.11/1.0.1/server/jar`;
     default:
       return "";
   }

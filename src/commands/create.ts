@@ -34,7 +34,6 @@ const userInput = async () => {
         { name: "Spigot", value: "spigot" },
         new Separator(chalk.bold("-- Mods --")),
         { name: "Fabric", value: "fabric" },
-        { name: "Forge", value: "forge" },
       ],
       default: "vanilla",
     }),
@@ -77,11 +76,11 @@ export const create = async () => {
   const { name, version, software, memory, location } = await userInput();
   const absolutePath = path.resolve(path.join(location, name));
 
-  await writeToStorage(name, { version, software, memory, location: absolutePath });
-
   const spinner = ora("Fetching server software").start();
   await downloadServerSoftware(software, version, absolutePath);
   spinner.succeed("Server software downloaded");
+
+  await writeToStorage(name, { version, software, memory, location: absolutePath });
 
   let eula = await acceptEula();
   while (!eula) {
