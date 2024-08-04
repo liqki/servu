@@ -22,7 +22,7 @@ const userInput = async () => {
     version: await input({
       message: "Enter the version of the server",
       default: await fetch("https://papermc.io/api/v2/projects/paper")
-        .then((res) => res.json())
+        .then((res: any) => res.json())
         .then((data) => data.versions.pop()),
     }),
     software: await select({
@@ -93,7 +93,7 @@ export const create = async () => {
   createStartScript(absolutePath, memory);
 
   console.log(chalk.greenBright("Server created successfully"));
-  const validVersionInstalled = await javaInstructions(version, software);
-  if (validVersionInstalled) console.log(chalk.blueBright("Run the server using the command: " + chalk.bgGrey(`servu run ${name}`)));
+  const validJavaVersionInstalled = await javaInstructions(version, software);
+  if (validJavaVersionInstalled) console.log(chalk.blueBright("Run the server using the command: " + chalk.bgGrey(`servu run ${name}`)));
   process.exit(0);
 };

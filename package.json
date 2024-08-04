@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "start": "bun ./src/index.ts",
+    "build:linux": "bun build --compile --minify --sourcemap --target=bun-linux-x64 ./src/index.ts --outfile servu",
+    "build:windows": "bun build --compile --minify --sourcemap --target=bun-windows-x64 ./src/index.ts --outfile servu",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -11,13 +13,12 @@
   "description": "",
   "dependencies": {
     "@inquirer/prompts": "^5.3.6",
+    "bun-types": "^1.1.21",
     "chalk": "^4.1.2",
     "commander": "^12.1.0",
     "ora": "^3.4.0"
   },
   "devDependencies": {
-    "@types/node": "^22.1.0",
-    "@types/ora": "^3.2.0",
-    "typescript": "^5.5.4"
+    "@types/ora": "^3.2.0"
   }
 }

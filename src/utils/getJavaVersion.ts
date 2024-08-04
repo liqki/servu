@@ -2,17 +2,20 @@ import chalk from "chalk";
 import { exec } from "child_process";
 
 const getJavaVersion = async (): Promise<string | null> => {
-  exec("java -version", (error, stdout, stderr) => {
-    if (error) {
-      return null;
-    }
-    const versionOutput = stderr || stdout;
-    const versionMatch = versionOutput.match(/version "(.*)"/);
-    if (versionMatch && versionMatch[1]) {
-      return versionMatch[1];
-    }
+  return new Promise((resolve) => {
+    exec("java -version", (error, stdout, stderr) => {
+      if (error) {
+        return resolve(null);
+      }
+      const versionOutput = stderr || stdout;
+      const versionMatch = versionOutput.match(/version "(.*)"/);
+      if (versionMatch && versionMatch[1]) {
+        return resolve(versionMatch[1]);
+      } else {
+        return resolve(null);
+      }
+    });
   });
-  return null;
 };
 
 const getRequiredJavaVersion = (mcVersion: string, serverSoftware: string): number => {
