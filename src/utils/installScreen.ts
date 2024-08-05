@@ -1,14 +1,10 @@
-import util from "util";
-import { exec } from "child_process";
 import chalk from "chalk";
 import ora from "ora";
+import { execPromise } from "./execPromise";
 
-const execPromise = util.promisify(exec);
-
-const screenInstalled = async (): Promise<boolean> => {
+export const screenInstalled = async (): Promise<boolean> => {
   try {
     await execPromise("screen --version");
-    console.log(chalk.green("Screen already installed"));
     return true;
   } catch {
     return false;
@@ -16,10 +12,11 @@ const screenInstalled = async (): Promise<boolean> => {
 };
 
 export const installScreen = async () => {
-  if (await screenInstalled()) return;
+  if (await screenInstalled()) return console.log(chalk.green("Screen already installed"));
   const spinner = ora("Installing screen").start();
   let installCommand = "";
 
+  // TODO: test if working
   // determine package manager to update installation command
   const { stdout: osRelease } = await execPromise("cat /etc/os-release");
   if (osRelease.includes("Ubuntu") || osRelease.includes("Debian")) {

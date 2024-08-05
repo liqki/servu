@@ -14,11 +14,11 @@
 - [x] delete key from local storage
 - [x] update local storage when server directory does not exist anymore => cleanup command
 - [x] server list command
-- [ ] add online status to server list
+- [x] add online status to server list (for screen sessions)
 - [x] run server command using child_process => windows done
-- [ ] run server command using child_process => linux also add ability to use screen
-- [ ] ability to reenter console after server is started using screen
-- [ ] stop command for screen session
+- [x] run server command using child_process => linux also add ability to use screen
+- [ ] ability to reenter console after server is started using screen => command currently always failing
+- [x] stop command for screen session
 - [x] java warning if not installed / wrong version
 - [x] fix: java version not detected properly
 - [x] automatically create suiting start script for os (.bat, .sh) => windows done, linux: create appropiate start.sh

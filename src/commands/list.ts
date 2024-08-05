@@ -1,5 +1,8 @@
 import chalk from "chalk";
+import os from "os";
 import { readStorage } from "../utils/localStorage";
+import { screenInstalled } from "../utils/installScreen";
+import { execPromise } from "../utils/execPromise";
 
 export const list = async () => {
   const servers = await readStorage();
@@ -10,6 +13,14 @@ export const list = async () => {
   console.log(chalk.bold("Your servers:\n"));
   for (const server in servers) {
     const { software, version, memory } = servers[server];
+    if (os.platform() === "linux" && (await screenInstalled())) {
+      // TODO: command suddenly failing (only when no screen session is running)
+      const { stdout } = await execPromise("screen -ls");
+      if (stdout.includes(server)) {
+        console.log(chalk`  {bold ${server}} - ${software} ${version} (${memory}MB)` + chalk.green(" (running in background)"));
+        continue;
+      }
+    }
     console.log(chalk`  {bold ${server}} - ${software} ${version} (${memory}MB)`);
   }
   console.log(chalk.blueBright("\nIf there are servers listed that no longer exist, you should run " + chalk.bgGrey("servu cleanup")));

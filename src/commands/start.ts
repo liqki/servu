@@ -18,8 +18,10 @@ const startServer = async (location: string, detached: boolean, silent: boolean)
       filePath = detached ? path.join(location, "start-screen.sh") : path.join(location, "start.sh");
       if (!fs.existsSync(filePath)) filePath = path.join(location, "start.sh");
       serverProcess = spawn("sh", [filePath], { cwd: location });
-      console.log(chalk.blueBright("The server is running in the background. Use `servu list` to see the status"));
-      return process.exit(0);
+      if (filePath === path.join(location, "start-screen.sh")) {
+        console.log(chalk.blueBright("The server is running in the background. Use " + chalk.bgGrey("servu list") + " to see the status"));
+        return process.exit(0);
+      }
     }
     const input = readline.createInterface({
       input: process.stdin,
@@ -64,12 +66,12 @@ const startServer = async (location: string, detached: boolean, silent: boolean)
 };
 
 export const start = async (server: string, detached: boolean, silent: boolean) => {
-  console.log(chalk.blueBright(`Starting server ${server}`));
   const serverProperties = await readFromStorage(server);
   if (!serverProperties) {
     console.log(chalk.red(`Server ${server} does not exist`));
     return;
   }
+  console.log(chalk.blueBright(`Starting server ${server}`));
   const { location, version, software } = serverProperties;
   const validJavaVersionInstalled = await javaInstructions(version, software);
   if (!validJavaVersionInstalled) return;
