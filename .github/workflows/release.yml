@@ -1,0 +1,49 @@
+name: Release
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*.*.*"
+
+jobs:
+  draft_release:
+    name: draft release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+
+      - name: build artifacts
+        run: bun run build
+
+      - uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: true
+          prerelease: false
+          release_name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: upload linux artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./servu
+          asset_name: servu
+          asset_content_type: application/octet-stream
+      - name: upload windows artifact
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./servu.exe
+          asset_name: servu.exe
+          asset_content_type: application/vnd.microsoft.portable-executable

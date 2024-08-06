@@ -8,7 +8,7 @@ import { start } from "./commands/start";
 import { stop } from "./commands/stop";
 import { attach } from "./commands/attach";
 
-program.name("servu").version("1.0.0", "-v, --version").helpCommand(false).description("A CLI tool to manage Minecraft servers");
+program.name("servu").version(require("../package.json").version, "-v, --version").helpCommand(false).description("A CLI tool to manage Minecraft servers");
 
 program.command("create").description("Create a new Minecraft server").action(create);
 program
