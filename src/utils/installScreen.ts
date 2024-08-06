@@ -16,7 +16,7 @@ export const installScreen = async () => {
   const spinner = ora("Installing screen").start();
   let installCommand = "";
 
-  // TODO: test if working
+  // tested on Ubuntu 22.04
   // determine package manager to update installation command
   const { stdout: osRelease } = await execPromise("cat /etc/os-release");
   if (osRelease.includes("Ubuntu") || osRelease.includes("Debian")) {

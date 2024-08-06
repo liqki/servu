@@ -14,10 +14,12 @@ program.command("create").description("Create a new Minecraft server").action(cr
 program
   .command("start <server>")
   .alias("run")
-  .option("-d, --detached", "Run the server in the background (works best on linux with screen)")
+  .option("-d, --detached", `${os.platform() === "linux" ? "Run the server in the background (screen only)" : "Run the server in another window"}`)
   .option("-s, --silent", "Hide the server log")
   .description("Start a Minecraft server")
   .action((server, options) => start(server, options.detached || false, options.silent || false));
+
+program.command("debug").action(() => console.log(process.env.USERPROFILE));
 
 if (os.platform() === "linux") {
   program

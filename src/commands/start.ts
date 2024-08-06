@@ -7,7 +7,7 @@ import { readFromStorage } from "../utils/localStorage";
 import { javaInstructions } from "../utils/getJavaVersion";
 import chalk from "chalk";
 
-const startServer = async (location: string, detached: boolean, silent: boolean): Promise<void> => {
+const startServer = async (location: string, detached: boolean, silent: boolean, name: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     let filePath;
     let serverProcess;
@@ -19,7 +19,8 @@ const startServer = async (location: string, detached: boolean, silent: boolean)
       if (!fs.existsSync(filePath)) filePath = path.join(location, "start.sh");
       serverProcess = spawn("sh", [filePath], { cwd: location });
       if (filePath === path.join(location, "start-screen.sh")) {
-        console.log(chalk.blueBright("The server is running in the background. Use " + chalk.bgGrey("servu list") + " to see the status"));
+        console.log(chalk.blueBright("The server is running in the background."));
+        console.log(chalk.blueBright("Use " + chalk.bgGrey("servu list") + " to see the status or reattach to the console using " + chalk.bgGrey(`servu attach ${name}`)));
         return process.exit(0);
       }
     }
@@ -52,7 +53,7 @@ const startServer = async (location: string, detached: boolean, silent: boolean)
         console.log(chalk.red(`Server process exited with code ${code}`));
         reject(process.exit(0));
       } else {
-        resolve();
+        resolve(process.exit(0));
       }
     });
 
@@ -75,5 +76,5 @@ export const start = async (server: string, detached: boolean, silent: boolean) 
   const { location, version, software } = serverProperties;
   const validJavaVersionInstalled = await javaInstructions(version, software);
   if (!validJavaVersionInstalled) return;
-  await startServer(location, detached, silent);
+  await startServer(location, detached, silent, server);
 };

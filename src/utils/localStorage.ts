@@ -1,9 +1,9 @@
 import fs from "fs";
+import os from "os";
 import { ServerProperties } from "./types";
 
-// TODO: change location in production
-const path = "./devdata";
-export const filePath = path + "/data.json";
+const path = os.homedir();
+export const filePath = path + "/.servu";
 
 export const readStorage = async () => {
   const fileContent = await new Promise<string>((resolve, reject) => {

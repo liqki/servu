@@ -14,8 +14,7 @@ export const list = async () => {
   for (const server in servers) {
     const { software, version, memory } = servers[server];
     if (os.platform() === "linux" && (await screenInstalled())) {
-      // TODO: command suddenly failing (only when no screen session is running)
-      const { stdout } = await execPromise("screen -ls");
+      const { stdout } = await execPromise("screen -ls").catch(() => ({ stdout: "" }));
       if (stdout.includes(server)) {
         console.log(chalk`  {bold ${server}} - ${software} ${version} (${memory}MB)` + chalk.green(" (running in background)"));
         continue;

@@ -17,7 +17,7 @@
 - [x] add online status to server list (for screen sessions)
 - [x] run server command using child_process => windows done
 - [x] run server command using child_process => linux also add ability to use screen
-- [ ] ability to reenter console after server is started using screen => command currently always failing
+- [x] ability to reenter console after server is started using screen => command currently always failing => fixed using bun shell
 - [x] stop command for screen session
 - [x] java warning if not installed / wrong version
 - [x] fix: java version not detected properly

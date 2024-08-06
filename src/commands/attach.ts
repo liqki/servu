@@ -3,13 +3,13 @@ import os from "os";
 import { screenInstalled } from "../utils/installScreen";
 import { readFromStorage } from "../utils/localStorage";
 import { execPromise } from "../utils/execPromise";
+import { $ } from "bun";
 
 const sessionExists = async (sessionName: string): Promise<boolean> => {
   try {
     const { stdout } = await execPromise("screen -ls");
     return stdout.includes(sessionName);
   } catch (error) {
-    console.error(chalk.red("There was an error running the command"));
     return false;
   }
 };
@@ -30,10 +30,8 @@ export const attach = async (server: string) => {
   }
   if (!(await sessionExists(server))) return console.log(chalk.red(`Server ${server} is not running`));
   try {
-    // TODO: command always failing
-    await execPromise(`screen -r ${server}`);
+    await $`screen -r ${server}`;
   } catch (error) {
-    // console.log(chalk.red(`Failed to attach to server ${server}`));
-    console.error(error);
+    console.log(chalk.red(`Failed to attach to server ${server}`));
   }
 };
