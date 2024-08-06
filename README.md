@@ -27,6 +27,6 @@
 - [x] delete server command
 - [x] instructions on installing java if not present
 - [x] migrate to bun
-- [ ] github action to build single executable using bun build --compile
+- [x] github action to build single executable using bun build --compile
 - [ ] install script for linux and windows
 - [ ] readme
