@@ -27,4 +27,4 @@
 - [x] migrate to bun
 - [x] github action to build single executable using bun build --compile
 - [x] install script for linux and windows
-- [ ] readme
+- [x] readme

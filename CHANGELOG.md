@@ -1,3 +1,6 @@
-# First Release
+# Changelog
 
-There is still a lot of work to be done, but the first release is here! 🎉
+- Added readme
+- Added license
+- Added update command
+- Fix: removed `debug` command

@@ -7,6 +7,7 @@ import { deleteServer } from "./commands/delete";
 import { start } from "./commands/start";
 import { stop } from "./commands/stop";
 import { attach } from "./commands/attach";
+import { checkForUpdates, update } from "./utils/checkForUpdates";
 
 program.name("servu").version(require("../package.json").version, "-v, --version").helpCommand(false).description("A CLI tool to manage Minecraft servers");
 
@@ -37,5 +38,11 @@ program
   .option("-y, --yes", "Skip confirmation prompt")
   .description("Delete a Minecraft server")
   .action((server, options) => deleteServer(server, options.yes || false));
+
+program
+  .command("update")
+  .option("-y, --yes", "Update servu")
+  .description("Check for updates and update servu")
+  .action((options) => (options.yes ? update() : checkForUpdates()));
 
 program.parse(process.argv);
