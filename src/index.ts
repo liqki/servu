@@ -41,7 +41,7 @@ program
 
 program
   .command("update")
-  .option("-y, --yes", "Update servu")
+  .option("-y, --yes", "Download and install update")
   .description("Check for updates and update servu")
   .action((options) => (options.yes ? update() : checkForUpdates()));
 
