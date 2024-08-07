@@ -19,8 +19,6 @@ program
   .description("Start a Minecraft server")
   .action((server, options) => start(server, options.detached || false, options.silent || false));
 
-program.command("debug").action(() => console.log(process.env.USERPROFILE));
-
 if (os.platform() === "linux") {
   program
     .command("stop <server>")

@@ -73,4 +73,4 @@ if (-Not ($currentPath -like "*$destDir*")) {
 # =============================================================================
  
 Write-Host "Installation Complete" -ForegroundColor Green
-Write-Host " Restart your shell to starting using '$binary'. Run '$binary --help' for more information"
+Write-Host " Restart your shell to starting using '$name'. Run '$name --help' for more information"
