@@ -4,14 +4,15 @@
   "main": "index.js",
   "scripts": {
     "start": "bun ./src/index.ts",
-    "build": "bun run build:linux && bun run build:windows",
+    "build": "bun run build:linux && bun run build:linux:arm && bun run build:windows",
     "build:linux": "bun build --compile --minify --sourcemap --target=bun-linux-x64 ./src/index.ts --outfile servu",
+    "build:linux:arm": "bun build --compile --minify --sourcemap --target=bun-linux-arm64 ./src/index.ts --outfile servu-arm",
     "build:windows": "bun build --compile --minify --sourcemap --target=bun-windows-x64 ./src/index.ts --outfile servu",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "liqki",
+  "license": "MIT",
+  "description": "cli tool to create and manage minecraft servers without effort",
   "dependencies": {
     "@inquirer/prompts": "^5.3.6",
     "bun-types": "^1.1.21",
